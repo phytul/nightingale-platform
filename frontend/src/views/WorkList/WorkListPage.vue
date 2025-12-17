@@ -175,6 +175,7 @@ const handleDelete = async (row: WorkItem) => {
     }
   } catch (error) {
     // 用户取消删除
+    console.error('删除工作失败:', error)
   }
 }
 
@@ -195,7 +196,7 @@ const submitForm = async () => {
         workList.value[index] = {
           ...workList.value[index],
           ...form,
-        }
+        } as WorkItem
         ElMessage.success('编辑成功')
       }
     } else {
@@ -203,8 +204,8 @@ const submitForm = async () => {
       const newWork: WorkItem = {
         ...form,
         id: Date.now(),
-        createdAt: new Date().toISOString().split('T')[0],
-      }
+        createdAt: new Date().toISOString().split('T')[0] || '',
+      } as WorkItem
       workList.value.push(newWork)
       ElMessage.success('添加成功')
     }

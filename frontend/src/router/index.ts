@@ -5,22 +5,36 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      redirect: '/home-page',
-    },
-    {
-      path: '/home-page',
-      name: 'HomePage',
-      component: () => import('@/views/HomePage.vue'),
-    },
-    {
-      path: '/first-home',
-      name: 'FirstHome',
-      component: () => import('@/views/FirstHome.vue'),
-    },
-    {
-      path: '/work-list',
-      name: 'WorkList',
-      component: () => import('@/views/WorkList/index.vue'),
+      redirect: '/home',
+      name: 'Main',
+      component: () => import('@/layout/MainLayout.vue'),
+      children: [
+        {
+          path: '/home',
+          name: 'Home',
+          component: () => import('@/views/Home/HomePage.vue'),
+        },
+        {
+          path: '/work-list',
+          name: 'WorkList',
+          component: () => import('@/views/WorkList/WorkListPage.vue'),
+        },
+        {
+          path: '/job-monitor',
+          name: 'JobMonitor',
+          component: () => import('@/views/JobMonitor/JobMonitorPage.vue'),
+        },
+        {
+          path: '/edit-job',
+          name: 'EditJob',
+          component: () => import('@/views/EditJob/EditJobPage.vue'),
+        },
+        {
+          path: '/multi-components',
+          name: 'MultiComponents',
+          component: () => import('@/views/MultiComponents/MultiComponentsPage.vue'),
+        },
+      ],
     },
   ],
 })

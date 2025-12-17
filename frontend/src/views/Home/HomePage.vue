@@ -1,13 +1,18 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { reactive } from 'vue'
 import { Calendar, CircleCheck, CircleClose, Timer } from '@element-plus/icons-vue'
 
 // 运行作业数据
-const runningJobs = ref([
-  { name: '明日方方昨日任务', status: 'running', startTime: '09:00:00', runningTime: '1小时25分钟' },
+const runningJobs = reactive([
+  {
+    name: '明日方方昨日任务',
+    status: 'running',
+    startTime: '09:00:00',
+    runningTime: '1小时25分钟',
+  },
   { name: '券小鸡', status: 'error', startTime: '09:00:00', runningTime: '13秒' },
   { name: '搜索蟑螂邮件', status: 'running', startTime: '08:40:00', runningTime: '55分钟' },
-  { name: '每日股票组合查询', status: 'success', startTime: '08:25:00', runningTime: '23分钟' }
+  { name: '每日股票组合查询', status: 'success', startTime: '08:25:00', runningTime: '23分钟' },
 ])
 </script>
 
@@ -15,25 +20,6 @@ const runningJobs = ref([
   <div class="dashboard">
     <!-- 顶部导航栏 -->
     <el-container>
-      <el-header height="auto" class="header">
-        <div class="header-left">
-          <el-avatar :size="40" src="https://via.placeholder.com/40">头像位置</el-avatar>
-        </div>
-        <el-menu
-          :default-active="'3'"
-          mode="horizontal"
-          background-color="transparent"
-          text-color="#202124"
-          active-text-color="#ffffff"
-          class="nav"
-        >
-          <el-menu-item index="1">作业列表  </el-menu-item>
-          <el-menu-item index="2">运行监控  </el-menu-item>
-          <el-menu-item index="3">编辑作业  </el-menu-item>
-          <el-menu-item index="4">组件 </el-menu-item>
-        </el-menu>
-      </el-header>
-
       <!-- 主要内容区域 -->
       <el-main class="main">
         <!-- 数据卡片区域 -->
@@ -156,36 +142,9 @@ const runningJobs = ref([
 .dashboard {
   min-height: 100vh;
   background-color: #f5f7fa;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  font-family:
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
   padding: 16px;
-}
-
-/* 顶部导航栏 */
-.header {
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  padding: 16px 24px;
-  background-color: #ffffff;
-  border-radius: 8px;
-  margin-bottom: 16px;
-  height: auto;
-}
-
-.header-left {
-  margin-right: 32px;
-}
-
-.nav {
-  border-bottom: none;
-}
-
-/* 高亮菜单项样式 */
-.nav .el-menu-item.is-active {
-  background-color: #1890ff;
-  color: #ffffff;
-  border-radius: 4px;
-  padding: 0 16px;
 }
 
 /* 主要内容区域 */
@@ -406,11 +365,11 @@ const runningJobs = ref([
     flex-direction: column;
     gap: 16px;
   }
-  
+
   .nav {
     width: 100%;
   }
-  
+
   .job-time-info {
     flex-direction: column;
     gap: 8px;
