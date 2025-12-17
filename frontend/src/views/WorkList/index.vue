@@ -30,7 +30,7 @@ const workList = ref<WorkItem[]>([
     priority: 'high',
     assignee: '张三',
     dueDate: '2024-01-15',
-    createdAt: '2024-01-01'
+    createdAt: '2024-01-01',
   },
   {
     id: 2,
@@ -40,7 +40,7 @@ const workList = ref<WorkItem[]>([
     priority: 'medium',
     assignee: '李四',
     dueDate: '2024-01-20',
-    createdAt: '2024-01-02'
+    createdAt: '2024-01-02',
   },
   {
     id: 3,
@@ -50,8 +50,8 @@ const workList = ref<WorkItem[]>([
     priority: 'low',
     assignee: '王五',
     dueDate: '2024-01-10',
-    createdAt: '2024-01-03'
-  }
+    createdAt: '2024-01-03',
+  },
 ])
 
 // 对话框状态
@@ -67,7 +67,7 @@ const form = reactive({
   status: 'pending',
   priority: 'medium',
   assignee: '',
-  dueDate: ''
+  dueDate: '',
 })
 
 // 表单规则
@@ -75,17 +75,18 @@ const rules = {
   title: [{ required: true, message: '请输入工作标题', trigger: 'blur' }],
   description: [{ required: true, message: '请输入工作描述', trigger: 'blur' }],
   assignee: [{ required: true, message: '请输入负责人', trigger: 'blur' }],
-  dueDate: [{ required: true, message: '请选择截止日期', trigger: 'change' }]
+  dueDate: [{ required: true, message: '请选择截止日期', trigger: 'change' }],
 }
 
 // 筛选后的工作列表
 const filteredWorkList = computed(() => {
-  return workList.value.filter(item => {
-    const matchSearch = item.title.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-                       item.description.toLowerCase().includes(searchQuery.value.toLowerCase())
+  return workList.value.filter((item) => {
+    const matchSearch =
+      item.title.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+      item.description.toLowerCase().includes(searchQuery.value.toLowerCase())
     const matchStatus = !statusFilter.value || item.status === statusFilter.value
     const matchPriority = !priorityFilter.value || item.priority === priorityFilter.value
-    
+
     return matchSearch && matchStatus && matchPriority
   })
 })
@@ -93,18 +94,18 @@ const filteredWorkList = computed(() => {
 // 状态标签样式
 const getStatusType = (status: string) => {
   const statusMap = {
-    'pending': 'info',
+    pending: 'info',
     'in-progress': 'warning',
-    'completed': 'success'
+    completed: 'success',
   }
   return statusMap[status as keyof typeof statusMap] || 'info'
 }
 
 const getStatusLabel = (status: string) => {
   const statusMap = {
-    'pending': '待处理',
+    pending: '待处理',
     'in-progress': '进行中',
-    'completed': '已完成'
+    completed: '已完成',
   }
   return statusMap[status as keyof typeof statusMap] || status
 }
@@ -112,18 +113,18 @@ const getStatusLabel = (status: string) => {
 // 优先级标签样式
 const getPriorityType = (priority: string) => {
   const priorityMap = {
-    'low': 'success',
-    'medium': 'warning',
-    'high': 'danger'
+    low: 'success',
+    medium: 'warning',
+    high: 'danger',
   }
   return priorityMap[priority as keyof typeof priorityMap] || 'info'
 }
 
 const getPriorityLabel = (priority: string) => {
   const priorityMap = {
-    'low': '低',
-    'medium': '中',
-    'high': '高'
+    low: '低',
+    medium: '中',
+    high: '高',
   }
   return priorityMap[priority as keyof typeof priorityMap] || priority
 }
@@ -139,7 +140,7 @@ const handleAdd = () => {
     status: 'pending',
     priority: 'medium',
     assignee: '',
-    dueDate: ''
+    dueDate: '',
   })
 }
 
@@ -154,7 +155,7 @@ const handleEdit = (row: WorkItem) => {
     status: row.status,
     priority: row.priority,
     assignee: row.assignee,
-    dueDate: row.dueDate
+    dueDate: row.dueDate,
   })
 }
 
@@ -164,10 +165,10 @@ const handleDelete = async (row: WorkItem) => {
     await ElMessageBox.confirm('确定要删除这项工作吗？', '提示', {
       confirmButtonText: '确定',
       cancelButtonText: '取消',
-      type: 'warning'
+      type: 'warning',
     })
-    
-    const index = workList.value.findIndex(item => item.id === row.id)
+
+    const index = workList.value.findIndex((item) => item.id === row.id)
     if (index !== -1) {
       workList.value.splice(index, 1)
       ElMessage.success('删除成功')
@@ -186,14 +187,14 @@ const handleView = (row: WorkItem) => {
 const submitForm = async () => {
   try {
     await formRef.value.validate()
-    
+
     if (form.id) {
       // 编辑
-      const index = workList.value.findIndex(item => item.id === form.id)
+      const index = workList.value.findIndex((item) => item.id === form.id)
       if (index !== -1) {
         workList.value[index] = {
           ...workList.value[index],
-          ...form
+          ...form,
         }
         ElMessage.success('编辑成功')
       }
@@ -202,12 +203,12 @@ const submitForm = async () => {
       const newWork: WorkItem = {
         ...form,
         id: Date.now(),
-        createdAt: new Date().toISOString().split('T')[0]
+        createdAt: new Date().toISOString().split('T')[0],
       }
       workList.value.push(newWork)
       ElMessage.success('添加成功')
     }
-    
+
     dialogVisible.value = false
   } catch (error) {
     console.error('表单验证失败:', error)
@@ -279,28 +280,13 @@ const resetForm = () => {
         <el-table-column prop="dueDate" label="截止日期" width="120" />
         <el-table-column label="操作" width="200" fixed="right">
           <template #default="{ row }">
-            <el-button
-              type="primary"
-              size="small"
-              :icon="View"
-              @click="handleView(row)"
-            >
+            <el-button type="primary" size="small" :icon="View" @click="handleView(row)">
               查看
             </el-button>
-            <el-button
-              type="warning"
-              size="small"
-              :icon="Edit"
-              @click="handleEdit(row)"
-            >
+            <el-button type="warning" size="small" :icon="Edit" @click="handleEdit(row)">
               编辑
             </el-button>
-            <el-button
-              type="danger"
-              size="small"
-              :icon="Delete"
-              @click="handleDelete(row)"
-            >
+            <el-button type="danger" size="small" :icon="Delete" @click="handleDelete(row)">
               删除
             </el-button>
           </template>
@@ -309,12 +295,7 @@ const resetForm = () => {
     </div>
 
     <!-- 添加/编辑对话框 -->
-    <el-dialog
-      v-model="dialogVisible"
-      :title="dialogTitle"
-      width="600px"
-      @close="resetForm"
-    >
+    <el-dialog v-model="dialogVisible" :title="dialogTitle" width="600px" @close="resetForm">
       <el-form ref="formRef" :model="form" :rules="rules" label-width="80px">
         <el-form-item label="工作标题" prop="title">
           <el-input v-model="form.title" placeholder="请输入工作标题" />
@@ -375,7 +356,7 @@ const resetForm = () => {
   </div>
 </template>
 
-<style scoped>
+<style scoped lang="less">
 .work-list-container {
   padding: 20px;
 }
@@ -387,9 +368,11 @@ const resetForm = () => {
   margin-bottom: 20px;
 }
 
-.header h2 {
-  margin: 0;
-  color: #303133;
+.header {
+  h2 {
+    margin: 0;
+    color: #303133;
+  }
 }
 
 .filter-container {

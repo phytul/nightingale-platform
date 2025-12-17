@@ -154,7 +154,6 @@ const runningJobs = ref([
 
 <style scoped>
 .dashboard {
-  width: 100%;
   min-height: 100vh;
   background-color: #f5f7fa;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
@@ -201,8 +200,6 @@ const runningJobs = ref([
   display: flex;
   gap: 16px;
   flex-wrap: wrap;
-  margin: 24px 16px;
-  padding: 0 8px;
 }
 
 /* 卡片项 */
@@ -217,7 +214,6 @@ const runningJobs = ref([
   border-radius: 8px;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
   padding: 16px;
-  height: 100%;
   min-height: 210px;
   display: flex;
   flex-direction: column;
