@@ -17,6 +17,11 @@ const router = createRouter({
       name: 'FirstHome',
       component: () => import('@/views/FirstHome.vue'),
     },
+    {
+      path: '/work-list',
+      name: 'WorkList',
+      component: () => import('@/views/WorkList/index.vue'),
+    },
   ],
 })
 
