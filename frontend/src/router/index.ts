@@ -15,11 +15,6 @@ const router = createRouter({
           component: () => import('@/views/Home/HomePage.vue'),
         },
         {
-          path: '/work-list',
-          name: 'WorkList',
-          component: () => import('@/views/WorkList/WorkListPage.vue'),
-        },
-        {
           path: '/job-monitor',
           name: 'JobMonitor',
           component: () => import('@/views/JobMonitor/JobMonitorPage.vue'),

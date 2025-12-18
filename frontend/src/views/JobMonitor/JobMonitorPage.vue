@@ -112,9 +112,6 @@ const jobMonitorList = ref<JobMonitorItem[]>([
 // 自动刷新定时器
 let refreshTimer: number | null = null
 
-// 表格引用
-const tableRef = ref()
-
 // 判断日期是否为今天
 const isToday = (dateStr: string) => {
   if (!dateStr || dateStr === '-') return false
@@ -320,29 +317,10 @@ const handleSelectionChange = (selection: JobMonitorItem[]) => {
   batchOperation.selectedCount = selection.length
   batchOperation.hasSelected = selection.length > 0
   
-  // 更新列表中的选中状态，确保复选框状态与数据同步
+  // 更新列表中的选中状态
   jobMonitorList.value.forEach(item => {
-    const isSelected = selection.some(selected => selected.id === item.id)
-    if (item.selected !== isSelected) {
-      item.selected = isSelected
-    }
+    item.selected = selection.some(selected => selected.id === item.id)
   })
-}
-
-// 处理行点击事件，实现点击行选中复选框
-const handleRowClick = (row: JobMonitorItem) => {
-  // 切换行的选中状态
-  row.selected = !row.selected
-  
-  // 使用表格的toggleRowSelection方法来切换复选框状态
-  if (tableRef.value) {
-    tableRef.value.toggleRowSelection(row, row.selected)
-  }
-  
-  // 更新批量操作状态
-  const selectedJobs = jobMonitorList.value.filter(item => item.selected)
-  batchOperation.selectedCount = selectedJobs.length
-  batchOperation.hasSelected = selectedJobs.length > 0
 }
 
 // 批量结束执行并修改状态为正常
@@ -551,13 +529,11 @@ onUnmounted(() => {
       </div>
       
       <el-table 
-        ref="tableRef"
         :data="filteredJobMonitorList" 
         style="width: 100%" 
         border
         @selection-change="handleSelectionChange"
         :row-class-name="getRowClassName"
-        @row-click="handleRowClick"
       >
         <el-table-column type="selection" width="55" />
         <el-table-column type="index" label="序号" width="80" />
@@ -720,11 +696,6 @@ onUnmounted(() => {
 
 .selected-row {
   background-color: #f0f9ff !important;
-  border-left: 4px solid #409eff !important;
-}
-
-.selected-row:hover {
-  background-color: #e6f4ff !important;
 }
 
 :deep(.el-table) {
