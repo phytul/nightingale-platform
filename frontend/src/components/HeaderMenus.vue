@@ -7,10 +7,6 @@ const menus = reactive([
     route: '/home',
   },
   {
-    name: '作业列表',
-    route: '/work-list',
-  },
-  {
     name: '运行监控',
     route: '/job-monitor',
   },
