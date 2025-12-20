@@ -4,7 +4,15 @@ import HeaderMenus from '@/components/HeaderMenus.vue'
 
 <template>
   <HeaderMenus />
-  <RouterView />
+  <div class="main-container">
+    <RouterView />
+  </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+  .main-container {
+    padding: 16px;
+    background-color: #f5f7fa;
+    min-height: 100vh;
+  }
+</style>

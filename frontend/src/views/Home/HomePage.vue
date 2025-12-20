@@ -139,14 +139,6 @@ const runningJobs = reactive([
 </template>
 
 <style scoped>
-.dashboard {
-  min-height: 100vh;
-  background-color: #f5f7fa;
-  font-family:
-    -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-  padding: 16px;
-}
-
 /* 主要内容区域 */
 .main {
   background-color: #f5f7fa;
