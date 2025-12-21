@@ -10,6 +10,15 @@ export const jobStatusLabelMap = {
 }
 
 /**
+ * 任务状态枚举
+ */
+export const getJobStatusOptions = () =>
+  Object.entries(jobStatusLabelMap)?.map(([code, label]) => ({
+    label,
+    code,
+  }))
+
+/**
  * 任务状态标签 Map
  */
 export const jobStatusTagColorMap = {

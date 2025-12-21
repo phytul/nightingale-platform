@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { reactive } from 'vue'
-import { jobStatusLabelMap, jobStatusTagColorMap } from './constants'
+import { getJobStatusOptions, jobStatusLabelMap, jobStatusTagColorMap } from './constants'
 
 // 作业监控项接口
 interface JobMonitorItem {
@@ -17,6 +17,21 @@ interface JobMonitorItem {
   showOperations?: boolean
   selected?: boolean
 }
+
+// 查询表单
+const formInline = reactive({
+  jobName: '',
+  executeMachine: '',
+  status: '',
+  dateRange: '',
+})
+
+const onSubmit = () => {
+  console.log(formInline)
+}
+
+// 作业状态枚举
+const jobStatusOptions = getJobStatusOptions()
 
 // 作业监控列表数据
 const jobMonitorList = reactive<JobMonitorItem[]>([
@@ -84,36 +99,86 @@ const jobMonitorList = reactive<JobMonitorItem[]>([
 </script>
 
 <template>
-  <div class="job-monitor-table">
-    <el-table :data="jobMonitorList" row-key="id">
-      <el-table-column type="selection" width="55" />
-      <el-table-column prop="jobName" label="作业名" />
-      <el-table-column prop="executeMachine" label="执行机器" />
-      <el-table-column prop="status" label="状态">
-        <template #default="scope: { row: JobMonitorItem }">
-          <el-tag :type="jobStatusTagColorMap[scope.row.status]">{{
-            jobStatusLabelMap[scope.row.status]
-          }}</el-tag>
-        </template>
-      </el-table-column>
-      <el-table-column prop="startTime" label="开始时间" />
-      <el-table-column prop="endTime" label="结束时间" />
-      <el-table-column prop="duration" label="执行时间" />
-      <el-table-column fixed="right" label="Operations" min-width="120">
-        <template #default>
-          <el-button link type="primary" size="small">Edit</el-button>
-        </template>
-      </el-table-column>
-    </el-table>
+  <div class="job-monitor-container">
+    <div class="job-monitor-card">
+      <el-form :inline="true" :model="formInline" class="demo-form-inline">
+        <el-form-item label="作业名">
+          <el-input v-model="formInline.jobName" placeholder="请输入作业名" clearable />
+        </el-form-item>
+        <el-form-item label="状态">
+          <el-select v-model="formInline.status" placeholder="选择状态" clearable>
+            <el-option
+              v-for="item in jobStatusOptions"
+              :key="item.code"
+              :label="item.label"
+              :value="item.code"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="选择日期">
+          <el-date-picker
+            v-model="formInline.dateRange"
+            type="daterange"
+            range-separator="To"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+          />
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="onSubmit">查询</el-button>
+        </el-form-item>
+      </el-form>
+    </div>
+
+    <div class="job-monitor-card">
+      <el-table :data="jobMonitorList" row-key="id">
+        <el-table-column type="selection" width="55" />
+        <el-table-column prop="jobName" label="作业名" />
+        <el-table-column prop="executeMachine" label="执行机器" />
+        <el-table-column prop="status" label="状态">
+          <template #default="scope: { row: JobMonitorItem }">
+            <el-tag :type="jobStatusTagColorMap[scope.row.status]">{{
+              jobStatusLabelMap[scope.row.status]
+            }}</el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column prop="startTime" label="开始时间" />
+        <el-table-column prop="endTime" label="结束时间" />
+        <el-table-column prop="duration" label="执行时间" />
+        <el-table-column fixed="right" label="Operations" min-width="120">
+          <template #default>
+            <el-button link type="primary" size="small">编辑作业</el-button>
+            <el-button link type="primary" size="small">启动作业</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+    </div>
+    <div class="job-monitor-card">
+      <el-button>中止作业</el-button>
+      <el-button>修改状态</el-button>
+    </div>
   </div>
 </template>
 
-<style scoped>
-.job-monitor-table {
-  position: sticky;
-  padding: 24px;
-  background-color: #fff;
-  box-shadow: 0 0 10px #f2f4f5;
-  border-radius: 8px;
+<style scoped lang="less">
+.job-monitor-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  .job-monitor-card {
+    padding: 24px;
+    background-color: #fff;
+    box-shadow: 0 0 10px #f2f4f5;
+    border-radius: 8px;
+  }
+}
+
+.demo-form-inline .el-input {
+  --el-input-width: 220px;
+}
+
+.demo-form-inline .el-select {
+  --el-select-width: 220px;
 }
 </style>
