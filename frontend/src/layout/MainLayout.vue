@@ -12,6 +12,7 @@ import HeaderMenus from '@/components/HeaderMenus.vue'
 <style scoped>
 .main-container {
   background-color: #f5f7fa;
-  min-height: 100vh;
+  height: calc(100vh - 80px);
+  overflow-y: scroll;
 }
 </style>
