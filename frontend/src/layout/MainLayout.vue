@@ -10,9 +10,8 @@ import HeaderMenus from '@/components/HeaderMenus.vue'
 </template>
 
 <style scoped>
-  .main-container {
-    padding: 16px;
-    background-color: #f5f7fa;
-    min-height: 100vh;
-  }
+.main-container {
+  background-color: #f5f7fa;
+  min-height: 100vh;
+}
 </style>

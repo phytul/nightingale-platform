@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { reactive } from 'vue'
 import { Calendar, CircleCheck, CircleClose, Timer } from '@element-plus/icons-vue'
+import PageContain from '@/components/PageContain.vue'
 
 // 运行作业数据
 const runningJobs = reactive([
@@ -17,125 +18,127 @@ const runningJobs = reactive([
 </script>
 
 <template>
-  <div class="dashboard">
-    <!-- 顶部导航栏 -->
-    <el-container>
-      <!-- 主要内容区域 -->
-      <el-main class="main">
-        <!-- 数据卡片区域 -->
-        <div class="cards-container">
-          <div class="card-item">
-            <div class="card">
-              <div class="card-content">
-                <div class="card-header">
-                  <div class="card-title">今日作业总数</div>
-                  <div class="card-icon">
-                    <el-icon><Calendar /></el-icon>
+  <PageContain>
+    <div class="dashboard">
+      <!-- 顶部导航栏 -->
+      <el-container>
+        <!-- 主要内容区域 -->
+        <el-main class="main">
+          <!-- 数据卡片区域 -->
+          <div class="cards-container">
+            <div class="card-item">
+              <div class="card">
+                <div class="card-content">
+                  <div class="card-header">
+                    <div class="card-title">今日作业总数</div>
+                    <div class="card-icon">
+                      <el-icon><Calendar /></el-icon>
+                    </div>
                   </div>
-                </div>
-                <div class="card-value">23</div>
-                <div class="card-stats">
-                  <div class="stat-item positive">环比上周 +18%</div>
-                  <div class="stat-item negative">环比昨天 -9%</div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="card-item">
-            <div class="card">
-              <div class="card-content">
-                <div class="card-header">
-                  <div class="card-title">已完成作业</div>
-                  <div class="card-icon">
-                    <el-icon><CircleCheck /></el-icon>
-                  </div>
-                </div>
-                <div class="card-value">18</div>
-                <div class="card-stats">
-                  <div class="stat-item">今日作业未完成</div>
-                  <div class="stat-item">当前完成率 75%</div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="card-item">
-            <div class="card">
-              <div class="card-content">
-                <div class="card-header">
-                  <div class="card-title">作业报错</div>
-                  <div class="card-icon">
-                    <el-icon><CircleClose /></el-icon>
-                  </div>
-                </div>
-                <div class="card-value">2</div>
-                <div class="card-stats">
-                  <div class="stat-item">今日共处理错误数 2</div>
-                  <div class="stat-item negative">今日新增错误数 -1</div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="card-item">
-            <div class="card">
-              <div class="card-content">
-                <div class="card-header">
-                  <div class="card-title">正在运行</div>
-                  <div class="card-icon">
-                    <el-icon><Timer /></el-icon>
-                  </div>
-                </div>
-                <div class="card-value">3</div>
-                <div class="card-stats">
-                  <div class="stat-item">今日作业平均运行时间 24分钟</div>
-                  <div class="stat-item positive">运行速度提升 +18%</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- 当前运行作业详情 -->
-        <div class="running-jobs-section">
-          <div class="running-jobs-card">
-            <div class="job-list">
-              <div v-for="(job, index) in runningJobs" :key="index" class="job-item">
-                <div class="job-info">
-                  <div class="job-status" :class="'status-' + job.status"></div>
-                  <div class="job-name">{{ job.name }}</div>
-                </div>
-                <div class="job-time-info">
-                  <div class="job-time">
-                    <span class="time-label">启动时间:</span>
-                    <span class="time-value">{{ job.startTime }}</span>
-                  </div>
-                  <div class="job-time">
-                    <span class="time-label">已运行时间:</span>
-                    <span class="time-value">{{ job.runningTime }}</span>
+                  <div class="card-value">23</div>
+                  <div class="card-stats">
+                    <div class="stat-item positive">环比上周 +18%</div>
+                    <div class="stat-item negative">环比昨天 -9%</div>
                   </div>
                 </div>
               </div>
             </div>
 
-            <!-- 分页指示器 -->
-            <div class="pagination-indicator">
-              <div v-for="i in 5" :key="i" class="page-dot" :class="{ active: i === 1 }"></div>
+            <div class="card-item">
+              <div class="card">
+                <div class="card-content">
+                  <div class="card-header">
+                    <div class="card-title">已完成作业</div>
+                    <div class="card-icon">
+                      <el-icon><CircleCheck /></el-icon>
+                    </div>
+                  </div>
+                  <div class="card-value">18</div>
+                  <div class="card-stats">
+                    <div class="stat-item">今日作业未完成</div>
+                    <div class="stat-item">当前完成率 75%</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="card-item">
+              <div class="card">
+                <div class="card-content">
+                  <div class="card-header">
+                    <div class="card-title">作业报错</div>
+                    <div class="card-icon">
+                      <el-icon><CircleClose /></el-icon>
+                    </div>
+                  </div>
+                  <div class="card-value">2</div>
+                  <div class="card-stats">
+                    <div class="stat-item">今日共处理错误数 2</div>
+                    <div class="stat-item negative">今日新增错误数 -1</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="card-item">
+              <div class="card">
+                <div class="card-content">
+                  <div class="card-header">
+                    <div class="card-title">正在运行</div>
+                    <div class="card-icon">
+                      <el-icon><Timer /></el-icon>
+                    </div>
+                  </div>
+                  <div class="card-value">3</div>
+                  <div class="card-stats">
+                    <div class="stat-item">今日作业平均运行时间 24分钟</div>
+                    <div class="stat-item positive">运行速度提升 +18%</div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
-      </el-main>
 
-      <!-- 底部标志区域 -->
-      <el-footer class="footer">
-        <div class="footer-content">
-          <el-avatar :size="40" src="https://via.placeholder.com/40"></el-avatar>
-          <div class="logo-text">Nightingale</div>
-        </div>
-      </el-footer>
-    </el-container>
-  </div>
+          <!-- 当前运行作业详情 -->
+          <div class="running-jobs-section">
+            <div class="running-jobs-card">
+              <div class="job-list">
+                <div v-for="(job, index) in runningJobs" :key="index" class="job-item">
+                  <div class="job-info">
+                    <div class="job-status" :class="'status-' + job.status"></div>
+                    <div class="job-name">{{ job.name }}</div>
+                  </div>
+                  <div class="job-time-info">
+                    <div class="job-time">
+                      <span class="time-label">启动时间:</span>
+                      <span class="time-value">{{ job.startTime }}</span>
+                    </div>
+                    <div class="job-time">
+                      <span class="time-label">已运行时间:</span>
+                      <span class="time-value">{{ job.runningTime }}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 分页指示器 -->
+              <div class="pagination-indicator">
+                <div v-for="i in 5" :key="i" class="page-dot" :class="{ active: i === 1 }"></div>
+              </div>
+            </div>
+          </div>
+        </el-main>
+
+        <!-- 底部标志区域 -->
+        <el-footer class="footer">
+          <div class="footer-content">
+            <el-avatar :size="40" src="https://via.placeholder.com/40"></el-avatar>
+            <div class="logo-text">Nightingale</div>
+          </div>
+        </el-footer>
+      </el-container>
+    </div>
+  </PageContain>
 </template>
 
 <style scoped>
