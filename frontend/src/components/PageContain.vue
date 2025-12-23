@@ -1,6 +1,6 @@
 <script setup lang="ts">
 export type Props = {
-  noPadding: boolean
+  noPadding?: boolean
 }
 const props = defineProps<Props>()
 const { noPadding } = props
