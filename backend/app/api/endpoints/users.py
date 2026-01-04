@@ -1,9 +1,11 @@
 from fastapi import APIRouter
-from app.schemas.user_schema import User
+from app.schemas.user_schema import Gender, User
 
 router = APIRouter()
 
 
 @router.get("/get-users", response_model=list[User])
 async def get_users():
-    return [{"id": 1, "sex": "male", "username": "admin", "email": "admin@example.com"}]
+    return [
+        {"id": 1, "sex": Gender.FEMALE, "username": "admin", "email": "admin@example.com"}
+    ]
