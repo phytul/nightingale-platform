@@ -26,3 +26,6 @@
 | 同步环境 | `uv sync`             | 根据 lock 文件确保 .venv 完全一致       |
 | 运行代码 | `uv run main.py`      | 自动在虚拟环境中运行，无需手动 activate |
 | 锁定版本 | `uv lock`             | 生成 uv.lock 文件（类似 yarn.lock）     |
+
+## 命令合集
+- 开启redis服务 $ redis-server

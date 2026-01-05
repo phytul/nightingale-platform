@@ -7,6 +7,7 @@ class Settings:
 settings = Settings()
 
 MYSQL_DB_URL = "mysql+aiomysql://root:123456@localhost:3306/zhiliao_ainame?charset=utf8"
+REDIS_URL = "redis://localhost:6379"
 
 JWT_SECRET_KEY = "fgjktyu7564wef"
 JWT_ACCESS_TOKEN_EXPIRES = timedelta(days=15)
