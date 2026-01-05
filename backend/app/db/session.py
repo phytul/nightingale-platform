@@ -2,6 +2,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
 from typing import Annotated
 from fastapi import Depends
+from core import config
 
 # 1. 数据库连接配置 (实际开发建议放 app/core/config.py)
 SQLALCHEMY_DATABASE_URL = "mysql+pymysql://user:password@localhost:3306/dbname"
