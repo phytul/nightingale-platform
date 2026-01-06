@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from app.api import router
 from app.core.config import settings
 import fastapi_cdn_host
-from db.redis_session import get_redis_connection
+from app.db.redis_session import get_redis_connection
 
 
 app = FastAPI(title=settings.PROJECT_NAME)
