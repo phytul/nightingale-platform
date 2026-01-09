@@ -27,5 +27,9 @@
 | 运行代码 | `uv run main.py`      | 自动在虚拟环境中运行，无需手动 activate |
 | 锁定版本 | `uv lock`             | 生成 uv.lock 文件（类似 yarn.lock）     |
 
-## 命令合集
+## 其他
 - 开启redis服务 $ redis-server
+- pgsql 数据库：nightingale 用户名root密码123456 
+ > $ psql -U root -d nightingale -h 127.0.0.1 -p 5432
+- mysql 用户名root密码123456
+- redis 本地的无用户名无密码

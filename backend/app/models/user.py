@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, String, Boolean, DateTime, Enum
 from sqlalchemy.sql import func
-from app.db.mysql_session import Base
+from app.db.pgsql_session import Base
 import enum
 from sqlalchemy.orm import mapped_column,Mapped
 from datetime import datetime
@@ -23,7 +23,7 @@ class User(Base):
     _password: Mapped[str] = mapped_column(String(255))
 
     # 性别字段：使用之前定义的枚举
-    gender: Mapped[str] = mapped_column(Enum(GenderEnum), default=GenderEnum.UNKNOWN)
+    gender: Mapped[str] = mapped_column(Enum(GenderEnum))
     birthday: Mapped[str] = mapped_column(String(50))
     Motto:Mapped[str] = mapped_column(String(255))
 
