@@ -6,19 +6,19 @@ from sqlalchemy.orm import mapped_column,Mapped
 from datetime import datetime
 from app.schemas.user import GenderEnum
 from pwdlib import PasswordHash
+from app.utils.security import generate_uuid
 
 #pip install "pwdlib[argon2]" 哈希加密密码
 
 password_hash = PasswordHash.recommended()
 
-
 class User(Base):
-    __tablename__ = "user"  # 数据库中的表名
+    __tablename__ = "users"  # 数据库中的表名
     
     id: Mapped[int] = mapped_column(Integer,primary_key=True,autoincrement=True)
-    uuid: Mapped[int] = mapped_column(Integer,primary_key=True)
+    uuid: Mapped[int] = mapped_column(String(255),primary_key=True,default=generate_uuid())
     username: Mapped[str] = mapped_column(String(50))
-    phone_nbr: Mapped[int] = mapped_column(Integer,unique=True)
+    phone_nbr: Mapped[str] = mapped_column(String(50),unique=True)
     email: Mapped[str] = mapped_column(String(50), unique=True)
     _password: Mapped[str] = mapped_column(String(255))
 

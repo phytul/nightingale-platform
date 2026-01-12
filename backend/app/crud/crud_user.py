@@ -1,9 +1,7 @@
 from typing import Optional, List
 from sqlalchemy.orm import Session
 from app.models.user import User
-from app.schemas.user import UserCreate, UserUpdate
-from app.utils.security import get_password_hash
-
+from app.schemas.user import UserCreateSchema, UserUpdateSchema
 
 class CRUDUser:
     """
@@ -22,33 +20,29 @@ class CRUDUser:
         """批量获取用户列表（支持分页）"""
         return db.query(User).offset(skip).limit(limit).all()
 
-    def create(self, db: Session, *, obj_in: UserCreate) -> User:
+    async def create_user(self, db: Session, *, obj_in: UserCreateSchema) -> User:
         """创建用户"""
         # 1. 准备数据（将 Schema 转为字典，并处理密码哈希）
         db_obj = User(
-            email=obj_in.email,
-            username=obj_in.username,
-            hashed_password=get_password_hash(obj_in.password),  # 确保存储哈希值
-            gender=obj_in.gender,
+            username = obj_in.username,
+            phone_nbr= obj_in.phone_nbr,
+            email = obj_in.email,
+            password = obj_in.password,  # 存储密码哈希值
+            gender = obj_in.gender,
+            birthday = obj_in.birthday,
+            Motto = obj_in.Motto
         )
         # 2. 写入数据库
         db.add(db_obj)
-        db.commit()
-        db.refresh(db_obj)  # 刷新以获取 ID 等自动生成的字段
+        await db.commit()
+        await db.refresh(db_obj)  # 刷新以获取 ID 等自动生成的字段
         return db_obj
 
-    def update(self, db: Session, *, db_obj: User, obj_in: UserUpdate) -> User:
+    def update(self, db: Session, *, db_obj: User, obj_in: UserUpdateSchema) -> User:
         """更新用户信息"""
         # 将输入数据转为字典，排除未设置的字段
         update_data = obj_in.model_dump(exclude_unset=True)
 
-        # 特殊处理密码：如果有新密码，需要哈希后再存
-        if update_data.get("password"):
-            hashed_password = get_password_hash(update_data["password"])
-            db_obj.hashed_password = hashed_password
-            del update_data["password"]
-
-        # 更新其他字段
         for field in update_data:
             if hasattr(db_obj, field):
                 setattr(db_obj, field, update_data[field])
