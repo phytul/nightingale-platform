@@ -3,7 +3,7 @@ from fastapi import HTTPException, Security
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from datetime import datetime
 from enum import Enum
-from core import config
+from app.core import config
 from starlette.status import HTTP_401_UNAUTHORIZED, HTTP_403_FORBIDDEN
 from threading import Lock
 
