@@ -46,3 +46,7 @@ pnpm build
 ```sh
 pnpm lint
 ```
+
+## 相关文档
+
+- icon：https://pictogrammers.com/library/mdi/
