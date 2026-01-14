@@ -1,0 +1,13 @@
+:root,
+html,
+body {
+  color: $foreground;
+  background-color: $background;
+
+  .v-btn--size-default {
+    border: 1px solid $border-color;
+    box-shadow: none;
+    border-radius: $radius;
+    font-size: $text-xs;
+  }
+}
