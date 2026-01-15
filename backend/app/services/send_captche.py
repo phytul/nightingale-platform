@@ -20,12 +20,13 @@ async def send_captche(email :Annotated[EmailStr,Query(...)],
     # 1.生成6位数验证码
     digits = string.digits
     code = ''.join(random.choices(digits, k=6))
-    expire_time = int(config.EXPIRE_TIMES[type])/60
+    expire_time = int(config.EXPIRE_TIMES[type])//60
+
     # 2.创建消息对象
     message = MessageSchema(
         subject='【nightingale-夜莺】注册验证码',
         recipients=[email],
-        body=f"您的验证码为：{code},{expire_time}分钟有效!请尽快验证",
+        body=f"您的验证码为：{code}，{expire_time}分钟有效!请尽快验证",
         subtype=MessageType.plain # 纯文本
     )
     # 3.发送验证码

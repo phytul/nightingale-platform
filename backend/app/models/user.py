@@ -17,15 +17,16 @@ class User(Base):
     
     id: Mapped[int] = mapped_column(Integer,primary_key=True,autoincrement=True)
     uuid: Mapped[int] = mapped_column(String(255),primary_key=True,default=generate_uuid())
-    username: Mapped[str] = mapped_column(String(50))
-    phone_nbr: Mapped[str] = mapped_column(String(50),unique=True)
-    email: Mapped[str] = mapped_column(String(50), unique=True)
-    _password: Mapped[str] = mapped_column(String(255))
+    avatar_url: Mapped[str] = mapped_column(String(255),nullable=True)
+    username: Mapped[str] = mapped_column(String(50),default='初遇')
+    phone_nbr: Mapped[str] = mapped_column(String(50),unique=True,nullable=True)
+    email: Mapped[str] = mapped_column(String(50), unique=True,nullable=True)
+    _password: Mapped[str] = mapped_column(String(255),nullable=True)
 
     # 性别字段：使用之前定义的枚举
-    gender: Mapped[str] = mapped_column(Enum(GenderEnum))
-    birthday: Mapped[str] = mapped_column(String(50))
-    Motto:Mapped[str] = mapped_column(String(255))
+    gender: Mapped[str] = mapped_column(Enum(GenderEnum),default=GenderEnum.UNKNOWN)
+    birthday: Mapped[str] = mapped_column(String(50),default="2000-01-01")
+    Motto:Mapped[str] = mapped_column(String(255),default='当代码替你奔跑，心灵便有了仰望星空的闲暇')
 
     is_active = Column(Boolean(), default=True)
     is_superuser = Column(Boolean(), default=False)
@@ -47,7 +48,7 @@ class User(Base):
     )
     
     def __init__(self, *args, **kwargs):
-        password = kwargs.pop('password') # 1. 提取并移除password参数
+        password = kwargs.pop('password', None) # 1. 提取并移除password参数，如果没有则为None
         super().__init__(*args,**kwargs)  # 2. 调用父类初始化
         if password:                      # 3. 处理密码设置
             self.password = password

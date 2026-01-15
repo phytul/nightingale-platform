@@ -9,7 +9,7 @@ from redis.asyncio import Redis
 
 # 获取 mail 连接
 async def get_mail()-> FastMail:
-    return create_qqmail_instance
+    return create_qqmail_instance()
 
 # 获取 pgsql 连接
 async def get_pgsql_db():

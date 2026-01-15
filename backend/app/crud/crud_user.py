@@ -1,6 +1,6 @@
 from typing import Optional, List
 from sqlalchemy.orm import Session
-from app.schemas.user import UserCreateSchema, UserUpdateSchema
+from app.schemas.user import UserCreateSchema, UserUpdateSchema,UserRegisterCreateSchema
 from app.db.pgsql_session import AsyncSession
 from app.models.user import User
 from sqlalchemy import select, update, delete, exists
@@ -24,6 +24,12 @@ class UserRepository:
     
     async def create(self, user_schema: UserCreateSchema) -> User:
         """创建用户"""
+        async with self.session.begin():
+            user = User(**user_schema.model_dump()) # 转换成关键字字典的格式
+            self.session.add(user)
+            return user
+        
+    async def create_email_register(self, user_schema:UserRegisterCreateSchema)-> User:
         async with self.session.begin():
             user = User(**user_schema.model_dump()) # 转换成关键字字典的格式
             self.session.add(user)
