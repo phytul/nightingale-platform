@@ -5,7 +5,7 @@ body {
   background-color: $background;
 
   .v-btn--size-default {
-    border: 1px solid $border-color;
+    border: 1px solid $form-card-border-mix-result;
     box-shadow: none;
     border-radius: $radius;
     font-size: $text-xs;

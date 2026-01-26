@@ -1,3 +1,4 @@
+// 基础变量
 $radius: 0.65rem;
 $space: 0.25rem;
 $text-xs: 0.75rem;
@@ -5,10 +6,24 @@ $text-xm: 0.825rem;
 $text-xl: 1rem;
 $container-7xl: 80rem;
 
+$color-primary: #cc7a60;
 $green-500: lab(70.5521% -66.5147 45.8073);
 
+$font-mono: "Monaco", "Menlo", "Ubuntu Mono", "Consolas", "source-code-pro", monospace;
+
+// 主题变量
 $muted-color: rgb(var(--v-theme-muted));
 $background: rgb(var(--v-theme-background));
 $foreground: rgb(var(--v-theme-foreground));
 $border-color: rgb(var(--v-theme-border));
 $muted-foreground: rgb(var(--v-theme-muted-foreground));
+$shadow-color: var(--v-theme-shadow-color);
+$header-gradient-start: var(--v-theme-header-gradient-start);
+$header-gradient-end: var(--v-theme-header-gradient-end);
+$form-card-bg-mix: var(--v-theme-form-card-bg-mix);
+$form-card-border-mix: var(--v-theme-form-card-border-mix);
+$form-card-shadow: var(--v-theme-form-card-shadow);
+$terminal-window-border: var(--v-theme-terminal-window-border);
+
+// 组合变量
+$form-card-border-mix-result: color-mix(in srgb, $border-color 50%, transparent);
