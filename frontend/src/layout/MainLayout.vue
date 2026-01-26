@@ -3,17 +3,22 @@ import useCustomTheme from "@/hooks/useCustomTheme";
 import { useRouter } from "vue-router";
 
 const router = useRouter();
+
 const customTheme = useCustomTheme();
 </script>
 
 <template>
   <div class="header">
     <div class="header-container">
-      <div class="header-left">
+      <div class="main-title" @click="router.push('/home')">
         <div class="status-tag">
           <span class="ready">ready</span>
         </div>
-        <div class="main-title"></div>
+        <div class="page-title">
+          <span class="path-prefix">~/</span>
+          <span class="title-text">Nightingale</span>
+          <span class="cursor-blink"></span>
+        </div>
       </div>
       <div class="header-right">
         <v-btn @click="customTheme.toggle()"
@@ -56,7 +61,17 @@ const customTheme = useCustomTheme();
     justify-content: space-between;
     align-items: center;
 
-    .header-left {
+    .main-title {
+      display: flex;
+      gap: calc($space * 4);
+      align-items: center;
+      cursor: pointer;
+      transition: opacity 0.2s ease;
+
+      &:hover {
+        opacity: 0.8;
+      }
+
       .status-tag {
         display: flex;
         gap: calc($space * 2);
@@ -70,6 +85,9 @@ const customTheme = useCustomTheme();
         font-size: $text-xm;
         background-color: $muted-color;
         font-family: $font-mono;
+        transition: all 0.2s ease;
+        cursor: pointer;
+        box-sizing: border-box;
 
         &::before {
           display: block;
@@ -78,13 +96,62 @@ const customTheme = useCustomTheme();
           height: calc($space * 2);
           background-color: color-mix(in oklab, $green-500 80%, transparent);
           border-radius: 50%;
+          transition: all 0.2s ease;
+        }
+
+        .ready {
+          transition: all 0.2s ease;
+        }
+
+        &:hover {
+          border-color: color-mix(in srgb, $color-primary 50%, transparent);
+          background-color: color-mix(in srgb, $muted-color 80%, $color-primary 20%);
+          transform: translateY(-1px);
+          box-shadow: 0 2px 8px color-mix(in srgb, $color-primary 20%, transparent);
+
+          .ready {
+            color: $color-primary;
+          }
+
+          &::before {
+            background-color: color-mix(in oklab, $green-500 100%, transparent);
+            transform: scale(1.1);
+          }
+        }
+      }
+
+      .page-title {
+        display: flex;
+        align-items: center;
+        font-family: $font-mono;
+        font-size: $text-xl;
+        color: $foreground;
+        gap: calc($space * 1);
+        font-weight: bold;
+
+        .path-prefix {
+          color: $color-primary;
+        }
+
+        .title-text {
+          color: $foreground;
+        }
+
+        .cursor-blink {
+          display: inline-block;
+          width: 2px;
+          height: 1em;
+          background-color: $color-primary;
+          margin-left: calc($space * 1);
+          animation: blink 1s infinite;
         }
       }
     }
 
     .header-right {
       display: flex;
-      gap: calc($space * 2);
+      gap: calc($space * 4);
+      align-items: center;
 
       .btn-container {
         display: flex;
@@ -95,6 +162,17 @@ const customTheme = useCustomTheme();
         color: $green-500;
       }
     }
+  }
+}
+
+@keyframes blink {
+  0%,
+  50% {
+    opacity: 1;
+  }
+  51%,
+  100% {
+    opacity: 0;
   }
 }
 
