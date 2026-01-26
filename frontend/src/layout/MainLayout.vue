@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import useCustomTheme from "@/hooks/useCustomTheme";
+import { useRouter } from "vue-router";
 
+const router = useRouter();
 const customTheme = useCustomTheme();
 </script>
 
@@ -26,7 +28,7 @@ const customTheme = useCustomTheme();
             v-if="customTheme.currentTheme === 'customDarkTheme'"
           ></v-icon
         ></v-btn>
-        <v-btn>
+        <v-btn @click="router.push('/login')">
           <div class="btn-container">
             <span class="sign">$</span> <span>登录</span>
             <v-icon size="1rem" class="mdi mdi-login"></v-icon></div
@@ -43,7 +45,7 @@ const customTheme = useCustomTheme();
 <style scoped lang="scss">
 .header {
   z-index: 50;
-  border-bottom: 1px solid $border-color;
+  border-bottom: 1px solid $form-card-border-mix-result;
 
   .header-container {
     display: flex;
@@ -59,13 +61,15 @@ const customTheme = useCustomTheme();
         display: flex;
         gap: calc($space * 2);
         align-items: center;
-        padding-block: calc($space * 1.5);
+        padding-top: calc($space * 1.5);
+        padding-bottom: calc($space * 1.8);
         padding-inline: calc($space * 3);
-        border: 1px solid $border-color;
+        border: 1px solid $form-card-border-mix-result;
         border-radius: $radius;
         color: $muted-foreground;
         font-size: $text-xm;
         background-color: $muted-color;
+        font-family: $font-mono;
 
         &::before {
           display: block;
@@ -99,5 +103,15 @@ const customTheme = useCustomTheme();
   margin: 0 auto;
   padding-block: calc($space * 4);
   padding-inline: calc($space * 8);
+  background-color: $background;
+  background-image:
+    linear-gradient(color-mix(in srgb, $border-color 8%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in srgb, $border-color 8%, transparent) 1px, transparent 1px);
+  background-size: 24px 24px;
+  background-position:
+    0 0,
+    0 0;
+  background-repeat: repeat;
+  min-height: calc(100vh - calc($space * 16));
 }
 </style>
