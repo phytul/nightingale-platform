@@ -22,6 +22,38 @@ const taskStats = ref({
   pending: 5,
 });
 
+// 大纲导航
+const outlineItems = [
+  { id: "intro", label: "平台介绍", icon: "mdi-information" },
+  { id: "features", label: "功能栏", icon: "mdi-view-grid" },
+  { id: "status", label: "状态栏", icon: "mdi-chart-box" },
+];
+
+// 大纲展开/收起状态
+const isOutlineExpanded = ref(false);
+
+// 切换大纲展开/收起
+const toggleOutline = () => {
+  isOutlineExpanded.value = !isOutlineExpanded.value;
+};
+
+// 平滑滚动到指定位置
+const scrollToSection = (id: string) => {
+  const element = document.getElementById(id);
+  if (element) {
+    const headerOffset = 80; // 考虑固定头部的高度
+    const elementPosition = element.getBoundingClientRect().top;
+    const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+
+    window.scrollTo({
+      top: offsetPosition,
+      behavior: "smooth",
+    });
+  }
+  // 点击后自动收起
+  isOutlineExpanded.value = false;
+};
+
 // 模拟数据更新
 onMounted(() => {
   // 可以在这里添加定时器来更新数据
@@ -31,11 +63,46 @@ onMounted(() => {
 
 <template>
   <div class="home-container">
+    <!-- 大纲导航 -->
+    <div class="outline-nav" :class="{ expanded: isOutlineExpanded }">
+      <button class="outline-toggle" @click="toggleOutline" :title="isOutlineExpanded ? '收起大纲' : '展开大纲'">
+        <v-icon :icon="isOutlineExpanded ? 'mdi-chevron-right' : 'mdi-menu'" size="1rem"></v-icon>
+      </button>
+      <div v-if="isOutlineExpanded" class="outline-content">
+        <div class="outline-header">
+          <span class="prompt">$</span>
+          <span class="command">cat outline.md</span>
+        </div>
+        <div class="outline-list">
+          <button
+            v-for="item in outlineItems"
+            :key="item.id"
+            class="outline-item"
+            @click="scrollToSection(item.id)"
+          >
+            <v-icon :icon="item.icon" size="0.875rem"></v-icon>
+            <span>{{ item.label }}</span>
+          </button>
+        </div>
+      </div>
+      <div v-else class="outline-icons">
+        <button
+          v-for="item in outlineItems"
+          :key="item.id"
+          class="outline-icon-item"
+          @click="scrollToSection(item.id)"
+          :title="item.label"
+        >
+          <v-icon :icon="item.icon" size="1rem"></v-icon>
+        </button>
+      </div>
+    </div>
+
     <!-- 平台介绍和功能导航 -->
     <TerminalWindow title="cat /etc/motd && ls -la /usr/bin/nightingale/@nightingale:~" max-width="100%">
       <div class="intro-navigation-section">
         <!-- 介绍部分 -->
-        <div class="intro-section">
+        <div id="intro" class="intro-section">
           <div class="command-line">
             <span class="prompt">$</span>
             <span class="command">cat /etc/motd</span>
@@ -55,7 +122,7 @@ onMounted(() => {
         <div class="section-divider"></div>
 
         <!-- 功能导航 -->
-        <div class="navigation-section">
+        <div id="features" class="navigation-section">
           <div class="command-line">
             <span class="prompt">$</span>
             <span class="command">ls -la /usr/bin/nightingale/</span>
@@ -156,7 +223,7 @@ onMounted(() => {
     </TerminalWindow>
 
     <!-- 数据概览 -->
-    <div class="stats-grid">
+    <div id="status" class="stats-grid">
       <!-- 服务器监控数据 -->
       <TerminalWindow title="server-monitor@nightingale:~" max-width="100%">
         <div class="stats-section">
@@ -271,6 +338,175 @@ onMounted(() => {
   flex-direction: column;
   gap: calc($space * 8);
   padding-bottom: calc($space * 8);
+  position: relative;
+}
+
+.outline-nav {
+  position: fixed;
+  right: 0;
+  top: calc(50% + calc($space * 8));
+  transform: translateY(-50%);
+  z-index: 40;
+  background-color: color-mix(in srgb, $background 92%, $form-card-bg-mix);
+  border: 3px solid color-mix(in srgb, $border-color 100%, $form-card-border-mix);
+  border-right: none;
+  border-radius: 6px 0 0 6px;
+  padding: calc($space * 3);
+  width: 48px;
+  outline: 1px solid color-mix(in srgb, $border-color 30%, transparent);
+  outline-offset: 2px;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  gap: calc($space * 2);
+
+  &.expanded {
+    width: 180px;
+    padding: calc($space * 4);
+  }
+
+  .outline-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    background-color: color-mix(in oklab, $green-500 10%, transparent);
+    border: 1px solid color-mix(in srgb, $green-500 30%, transparent);
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    color: $green-500;
+    flex-shrink: 0;
+
+    &:hover {
+      background-color: color-mix(in oklab, $green-500 20%, transparent);
+      border-color: color-mix(in srgb, $green-500 50%, transparent);
+      transform: scale(1.05);
+    }
+
+    :deep(.v-icon) {
+      color: $green-500;
+    }
+  }
+
+  .outline-icons {
+    display: flex;
+    flex-direction: column;
+    gap: calc($space * 2);
+  }
+
+  .outline-icon-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    background-color: transparent;
+    border: 1px solid color-mix(in srgb, $border-color 30%, transparent);
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    color: $muted-foreground;
+
+    &:hover {
+      background-color: color-mix(in oklab, $green-500 15%, transparent);
+      border-color: color-mix(in srgb, $green-500 50%, transparent);
+      color: $green-500;
+      transform: scale(1.1);
+    }
+
+    :deep(.v-icon) {
+      color: inherit;
+    }
+  }
+
+  .outline-content {
+    display: flex;
+    flex-direction: column;
+    gap: calc($space * 2);
+    animation: fadeIn 0.2s ease;
+  }
+
+  .outline-header {
+    display: flex;
+    align-items: center;
+    gap: calc($space * 2);
+    margin-bottom: calc($space * 2);
+    padding-bottom: calc($space * 4);
+    border-bottom: 1px dashed $form-card-border-mix-result;
+    font-size: 0.75rem;
+    font-family: $font-mono;
+
+    .prompt {
+      color: $green-500;
+      font-weight: 600;
+    }
+
+    .command {
+      color: $foreground;
+    }
+  }
+
+  .outline-list {
+    display: flex;
+    flex-direction: column;
+    gap: calc($space * 2);
+  }
+
+  .outline-item {
+    display: flex;
+    align-items: center;
+    gap: calc($space * 3);
+    padding: calc($space * 3) calc($space * 4);
+    background-color: transparent;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    color: $muted-foreground;
+    font-size: 0.75rem;
+    font-family: $font-mono;
+    text-align: left;
+    width: 100%;
+
+    &:hover {
+      background-color: color-mix(in oklab, $green-500 15%, transparent);
+      color: $foreground;
+      transform: translateX(4px);
+
+      :deep(.v-icon) {
+        color: $green-500;
+      }
+    }
+
+    :deep(.v-icon) {
+      color: $muted-foreground;
+      transition: color 0.2s ease;
+    }
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateX(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+// 响应式：在小屏幕上隐藏大纲导航
+@media (max-width: 1024px) {
+  .outline-nav {
+    display: none;
+  }
 }
 
 .intro-navigation-section {
@@ -280,6 +516,8 @@ onMounted(() => {
 }
 
 .intro-section {
+  scroll-margin-top: calc($space * 20);
+
   .command-line {
     display: flex;
     align-items: center;
@@ -341,6 +579,7 @@ onMounted(() => {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
   gap: calc($space * 8);
+  scroll-margin-top: calc($space * 20);
 }
 
 .stats-section {
@@ -484,6 +723,8 @@ onMounted(() => {
 }
 
 .navigation-section {
+  scroll-margin-top: calc($space * 20);
+
   .command-line {
     display: flex;
     align-items: center;
@@ -572,7 +813,7 @@ onMounted(() => {
       background-color: color-mix(in oklab, $green-500 5%, transparent);
       transform: translateY(-2px);
       box-shadow:
-        0 4px 12px color-mix(in oklab, $green-500 15%, transparent),
+        0 4px 12px color-mix(in oklab, $green-500 5%, transparent),
         0 2px 4px color-mix(in oklab, $shadow-color 10%, transparent);
 
       &::before {
