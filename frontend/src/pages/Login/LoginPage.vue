@@ -1,20 +1,112 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, computed, onUnmounted } from "vue";
 import TerminalWindow from "@/components/TerminalWindow.vue";
 
-const username = ref("");
+// 模式切换：login 或 register
+const mode = ref<"login" | "register">("login");
+
+// 登录表单
+const loginEmail = ref("");
 const password = ref("");
 const showPassword = ref(false);
 
+// 注册表单
+const email = ref("");
+const verificationCode = ref("");
+const registerPassword = ref("");
+const confirmPassword = ref("");
+const showRegisterPassword = ref(false);
+const showConfirmPassword = ref(false);
+const codeCountdown = ref(0);
+const isSendingCode = ref(false);
+
+// 验证码倒计时
+let countdownTimer: number | null = null;
+
+const startCountdown = () => {
+  codeCountdown.value = 60;
+  countdownTimer = window.setInterval(() => {
+    codeCountdown.value--;
+    if (codeCountdown.value <= 0) {
+      if (countdownTimer) {
+        clearInterval(countdownTimer);
+        countdownTimer = null;
+      }
+    }
+  }, 1000);
+};
+
+const sendVerificationCode = async () => {
+  if (!email.value || !isValidEmail(email.value)) {
+    console.error("请输入有效的邮箱地址");
+    return;
+  }
+
+  if (codeCountdown.value > 0) return;
+
+  isSendingCode.value = true;
+  try {
+    // TODO: 调用发送验证码API
+    console.log("发送验证码到:", email.value);
+    // 模拟API调用
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    startCountdown();
+  } catch (error) {
+    console.error("发送验证码失败:", error);
+  } finally {
+    isSendingCode.value = false;
+  }
+};
+
+const isValidEmail = (email: string): boolean => {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+};
+
+const isPasswordMatch = computed(() => {
+  if (!registerPassword.value || !confirmPassword.value) return true;
+  return registerPassword.value === confirmPassword.value;
+});
+
 const handleLogin = () => {
   // 登录逻辑
-  console.log("登录", { username: username.value, password: password.value });
+  console.log("登录", { email: loginEmail.value, password: password.value });
 };
+
+const handleRegister = () => {
+  if (!isPasswordMatch.value) {
+    console.error("两次输入的密码不一致");
+    return;
+  }
+  if (!verificationCode.value) {
+    console.error("请输入验证码");
+    return;
+  }
+  // 注册逻辑
+  console.log("注册", {
+    email: email.value,
+    verificationCode: verificationCode.value,
+    password: registerPassword.value,
+  });
+};
+
+// 清理定时器
+const cleanup = () => {
+  if (countdownTimer) {
+    clearInterval(countdownTimer);
+    countdownTimer = null;
+  }
+};
+
+// 组件卸载时清理
+onUnmounted(() => {
+  cleanup();
+});
 </script>
 
 <template>
   <div class="login-container">
-    <TerminalWindow title="login@nightingale:~">
+    <TerminalWindow :title="mode === 'login' ? 'login@nightingale:~' : 'register@nightingale:~'">
       <div class="terminal-output">
         <div class="command-line">
           <span class="prompt">$</span>
@@ -24,22 +116,46 @@ const handleLogin = () => {
           <div class="welcome-banner">
             <span class="bracket">[</span> Nightingale Platform <span class="bracket">]</span>
           </div>
-          <div class="info-line"><span class="symbol">></span> Authentication Required</div>
+          <div class="info-line">
+            <span class="symbol">></span>
+            {{ mode === "login" ? "Authentication Required" : "Registration Required" }}
+          </div>
         </div>
       </div>
 
-      <div class="form-card">
+      <!-- 模式切换 -->
+      <div class="mode-switch">
+        <button
+          :class="['mode-button', { active: mode === 'login' }]"
+          @click="mode = 'login'"
+        >
+          <span class="prompt">$</span>
+          <span class="command-text">login</span>
+        </button>
+        <span class="mode-separator">|</span>
+        <button
+          :class="['mode-button', { active: mode === 'register' }]"
+          @click="mode = 'register'"
+        >
+          <span class="prompt">$</span>
+          <span class="command-text">register</span>
+        </button>
+      </div>
+
+      <!-- 登录表单 -->
+      <div v-if="mode === 'login'" class="form-card">
         <v-form @submit.prevent="handleLogin" class="login-form">
           <div class="input-group">
             <span class="input-prompt">$</span>
             <v-text-field
-              v-model="username"
-              placeholder="username"
+              v-model="loginEmail"
+              placeholder="email"
+              type="email"
               variant="plain"
               density="compact"
               class="terminal-input"
               hide-details="auto"
-              autocomplete="username"
+              autocomplete="email"
             ></v-text-field>
           </div>
 
@@ -71,6 +187,115 @@ const handleLogin = () => {
             <span class="prompt">$</span>
             <v-btn type="submit" variant="text" class="execute-button" size="small">
               <span class="command-text">./login.sh</span>
+              <span class="cursor-blink">_</span>
+            </v-btn>
+          </div>
+        </v-form>
+      </div>
+
+      <!-- 注册表单 -->
+      <div v-if="mode === 'register'" class="form-card">
+        <v-form @submit.prevent="handleRegister" class="register-form">
+          <div class="input-group">
+            <span class="input-prompt">$</span>
+            <v-text-field
+              v-model="email"
+              placeholder="email"
+              type="email"
+              variant="plain"
+              density="compact"
+              class="terminal-input"
+              hide-details="auto"
+              autocomplete="email"
+            ></v-text-field>
+          </div>
+
+          <div class="input-group verification-code-group">
+            <span class="input-prompt">$</span>
+            <v-text-field
+              v-model="verificationCode"
+              placeholder="verification code"
+              variant="plain"
+              density="compact"
+              class="terminal-input code-input"
+              hide-details="auto"
+              autocomplete="off"
+            ></v-text-field>
+            <v-btn
+              :disabled="codeCountdown > 0 || isSendingCode || !isValidEmail(email)"
+              variant="text"
+              class="send-code-button"
+              size="small"
+              @click="sendVerificationCode"
+            >
+              <span v-if="codeCountdown > 0" class="countdown-text">{{ codeCountdown }}s</span>
+              <span v-else class="send-text">发送</span>
+            </v-btn>
+          </div>
+
+          <div class="input-group">
+            <span class="input-prompt">$</span>
+            <v-text-field
+              v-model="registerPassword"
+              :type="showRegisterPassword ? 'text' : 'password'"
+              placeholder="password"
+              variant="plain"
+              density="compact"
+              class="terminal-input password-input"
+              hide-details="auto"
+              autocomplete="new-password"
+              @click:append-inner="showRegisterPassword = !showRegisterPassword"
+            >
+              <template #append-inner>
+                <v-icon
+                  :icon="showRegisterPassword ? 'mdi-eye' : 'mdi-eye-off'"
+                  size="small"
+                  class="password-toggle"
+                  @click="showRegisterPassword = !showRegisterPassword"
+                ></v-icon>
+              </template>
+            </v-text-field>
+          </div>
+
+          <div class="input-group" :class="{ 'password-mismatch': !isPasswordMatch }">
+            <span class="input-prompt">$</span>
+            <v-text-field
+              v-model="confirmPassword"
+              :type="showConfirmPassword ? 'text' : 'password'"
+              placeholder="confirm password"
+              variant="plain"
+              density="compact"
+              class="terminal-input password-input"
+              hide-details="auto"
+              autocomplete="new-password"
+              @click:append-inner="showConfirmPassword = !showConfirmPassword"
+            >
+              <template #append-inner>
+                <v-icon
+                  :icon="showConfirmPassword ? 'mdi-eye' : 'mdi-eye-off'"
+                  size="small"
+                  class="password-toggle"
+                  @click="showConfirmPassword = !showConfirmPassword"
+                ></v-icon>
+              </template>
+            </v-text-field>
+          </div>
+
+          <div v-if="!isPasswordMatch && confirmPassword" class="error-message">
+            <span class="error-symbol">!</span>
+            <span>密码不一致</span>
+          </div>
+
+          <div class="command-execute">
+            <span class="prompt">$</span>
+            <v-btn
+              type="submit"
+              variant="text"
+              class="execute-button"
+              size="small"
+              :disabled="!isPasswordMatch"
+            >
+              <span class="command-text">./register.sh</span>
               <span class="cursor-blink">_</span>
             </v-btn>
           </div>
@@ -401,6 +626,170 @@ const handleLogin = () => {
   }
   50% {
     box-shadow: 0 0 0 4px color-mix(in oklab, $green-500 15%, transparent);
+  }
+}
+
+// 模式切换
+.mode-switch {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: calc($space * 4);
+  padding: calc($space * 6) 0;
+  margin-bottom: calc($space * 4);
+  border-bottom: 1px dashed $form-card-border-mix-result;
+}
+
+.mode-button {
+  display: flex;
+  align-items: center;
+  gap: calc($space * 2);
+  padding: calc($space * 2) calc($space * 4);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-family: $font-mono;
+  font-size: 0.875rem;
+  color: $muted-foreground;
+  transition: all 0.2s ease;
+  border-radius: 4px;
+
+  .prompt {
+    color: $muted-foreground;
+    transition: color 0.2s ease;
+  }
+
+  .command-text {
+    color: $muted-foreground;
+    transition: color 0.2s ease;
+  }
+
+  &:hover {
+    background-color: color-mix(in oklab, $green-500 10%, transparent);
+    color: $foreground;
+
+    .prompt {
+      color: $green-500;
+    }
+
+    .command-text {
+      color: $foreground;
+    }
+  }
+
+  &.active {
+    color: $foreground;
+
+    .prompt {
+      color: $green-500;
+      animation: pulse 1.5s ease-in-out infinite;
+    }
+
+    .command-text {
+      color: $foreground;
+    }
+  }
+}
+
+.mode-separator {
+  color: $muted-foreground;
+  font-family: $font-mono;
+  opacity: 0.5;
+}
+
+// 验证码输入组
+.verification-code-group {
+  position: relative;
+  padding-right: 80px;
+}
+
+.code-input {
+  flex: 1;
+}
+
+.send-code-button {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  padding: calc($space * 2) calc($space * 4);
+  min-width: auto;
+  height: auto;
+  font-family: $font-mono;
+  font-size: 0.75rem;
+  color: $green-500;
+  text-transform: none;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  border: 1px solid transparent;
+
+  &:hover:not(:disabled) {
+    background-color: color-mix(in oklab, $green-500 15%, transparent);
+    border-color: color-mix(in oklab, $green-500 30%, transparent);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .countdown-text {
+    color: $muted-foreground;
+    font-family: $font-mono;
+  }
+
+  .send-text {
+    color: $green-500;
+    font-family: $font-mono;
+  }
+}
+
+// 密码不匹配样式
+.input-group.password-mismatch {
+  border-bottom-color: #ff5f57;
+
+  .input-prompt {
+    color: #ff5f57;
+  }
+}
+
+.error-message {
+  display: flex;
+  align-items: center;
+  gap: calc($space * 2);
+  padding: calc($space * 3) calc($space * 4);
+  margin-top: calc($space * 2);
+  margin-bottom: calc($space * 4);
+  background-color: color-mix(in oklab, #ff5f57 10%, transparent);
+  border: 1px solid color-mix(in oklab, #ff5f57 30%, transparent);
+  border-radius: 4px;
+  color: #ff5f57;
+  font-family: $font-mono;
+  font-size: 0.75rem;
+
+  .error-symbol {
+    color: #ff5f57;
+    font-weight: 600;
+  }
+}
+
+.execute-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  animation: none;
+
+  &:hover {
+    background-color: transparent;
+    transform: none;
+    box-shadow: none;
+
+    &::before {
+      opacity: 0;
+    }
+
+    .command-text {
+      color: $foreground;
+    }
   }
 }
 </style>

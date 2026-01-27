@@ -49,8 +49,15 @@ const customTheme = useCustomTheme();
 
 <style scoped lang="scss">
 .header {
+  position: sticky;
+  top: 0;
   z-index: 50;
+  background-color: color-mix(in srgb, $background 95%, transparent);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   border-bottom: 1px solid $form-card-border-mix-result;
+  box-shadow: 0 1px 3px color-mix(in srgb, $shadow-color 5%, transparent);
+  transition: box-shadow 0.3s ease, background-color 0.3s ease;
 
   .header-container {
     display: flex;
