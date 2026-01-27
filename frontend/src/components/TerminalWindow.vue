@@ -25,8 +25,8 @@ const handleMouseMove = (e: MouseEvent) => {
   const mouseX = e.clientX - centerX;
   const mouseY = e.clientY - centerY;
 
-  // 计算倾斜角度，最大角度为 5 度
-  const maxRotate = 5;
+  // 计算倾斜角度，最大角度为 2 度
+  const maxRotate = 2;
   rotateY.value = (mouseX / (rect.width / 2)) * maxRotate;
   rotateX.value = -(mouseY / (rect.height / 2)) * maxRotate;
 };
