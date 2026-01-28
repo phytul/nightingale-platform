@@ -313,7 +313,7 @@ onMounted(() => {
 .home-container {
   display: flex;
   flex-direction: column;
-  gap: calc($space * 8);
+  gap: calc($space * 4);
   padding-bottom: calc($space * 8);
   position: relative;
 }
@@ -555,7 +555,6 @@ onMounted(() => {
 // 紧凑的状态栏设计
 .stats-container {
   scroll-margin-top: calc($space * 20);
-  margin-bottom: calc($space * 4);
 }
 
 .stats-section-compact {
