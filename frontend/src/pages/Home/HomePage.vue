@@ -24,9 +24,9 @@ const taskStats = ref({
 
 // 大纲导航
 const outlineItems = [
+  { id: "status", label: "状态栏", icon: "mdi-chart-box" },
   { id: "intro", label: "平台介绍", icon: "mdi-information" },
   { id: "features", label: "功能栏", icon: "mdi-view-grid" },
-  { id: "status", label: "状态栏", icon: "mdi-chart-box" },
 ];
 
 // 大纲展开/收起状态
@@ -96,6 +96,91 @@ onMounted(() => {
           <v-icon :icon="item.icon" size="1rem"></v-icon>
         </button>
       </div>
+    </div>
+
+    <!-- 数据概览 - 紧凑设计 -->
+    <div id="status" class="stats-container">
+      <TerminalWindow title="system-status@nightingale:~" max-width="100%">
+        <div class="stats-section-compact">
+          <div class="command-line-compact">
+            <span class="prompt">$</span>
+            <span class="command">./system-status.sh --summary</span>
+          </div>
+          <div class="stats-grid-compact">
+            <!-- 任务调度数据 -->
+            <div class="stats-group task-scheduler-group">
+              <div class="stats-group-header">
+                <span class="symbol">></span>
+                <span class="group-title">任务调度</span>
+              </div>
+              <div class="stats-items-compact">
+                <div class="stat-item-compact">
+                  <span class="stat-label-compact">运行中</span>
+                  <span class="stat-value-compact running">{{ taskStats.running }}</span>
+                </div>
+                <div class="stat-item-compact">
+                  <span class="stat-label-compact">已完成</span>
+                  <span class="stat-value-compact completed">{{ taskStats.completed }}</span>
+                </div>
+                <div class="stat-item-compact">
+                  <span class="stat-label-compact">失败</span>
+                  <span class="stat-value-compact failed">{{ taskStats.failed }}</span>
+                </div>
+                <div class="stat-item-compact">
+                  <span class="stat-label-compact">等待中</span>
+                  <span class="stat-value-compact pending">{{ taskStats.pending }}</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- 服务器监控数据 -->
+            <div class="stats-group">
+              <div class="stats-group-header">
+                <span class="symbol">></span>
+                <span class="group-title">服务器监控</span>
+              </div>
+              <div class="stats-items-compact">
+                <div class="stat-item-compact">
+                  <span class="stat-label-compact">CPU</span>
+                  <div class="stat-progress-compact">
+                    <span class="stat-value-compact">{{ serverStats.totalCpu }}%</span>
+                    <div class="stat-bar-compact">
+                      <div
+                        class="stat-bar-fill-compact cpu"
+                        :style="{ width: `${serverStats.totalCpu}%` }"
+                      ></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="stat-item-compact">
+                  <span class="stat-label-compact">内存</span>
+                  <div class="stat-progress-compact">
+                    <span class="stat-value-compact">{{ serverStats.totalMemory }}%</span>
+                    <div class="stat-bar-compact">
+                      <div
+                        class="stat-bar-fill-compact memory"
+                        :style="{ width: `${serverStats.totalMemory}%` }"
+                      ></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="stat-item-compact">
+                  <span class="stat-label-compact">磁盘</span>
+                  <div class="stat-progress-compact">
+                    <span class="stat-value-compact">{{ serverStats.totalDisk }}%</span>
+                    <div class="stat-bar-compact">
+                      <div
+                        class="stat-bar-fill-compact disk"
+                        :style="{ width: `${serverStats.totalDisk}%` }"
+                      ></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </TerminalWindow>
     </div>
 
     <!-- 平台介绍和功能导航 -->
@@ -221,114 +306,6 @@ onMounted(() => {
         </div>
       </div>
     </TerminalWindow>
-
-    <!-- 数据概览 -->
-    <div id="status" class="stats-grid">
-      <!-- 服务器监控数据 -->
-      <TerminalWindow title="server-monitor@nightingale:~" max-width="100%">
-        <div class="stats-section">
-          <div class="command-line">
-            <span class="prompt">$</span>
-            <span class="command">./server-monitor.sh --status</span>
-          </div>
-          <div class="stats-content">
-            <div class="stat-item">
-              <div class="stat-label">
-                <span class="symbol">></span>
-                服务器总数
-              </div>
-              <div class="stat-value">{{ serverStats.totalServers }}</div>
-            </div>
-            <div class="stat-item">
-              <div class="stat-label">
-                <span class="symbol">></span>
-                在线服务器
-              </div>
-              <div class="stat-value online">{{ serverStats.onlineServers }}</div>
-            </div>
-            <div class="stat-item">
-              <div class="stat-label">
-                <span class="symbol">></span>
-                CPU 使用率
-              </div>
-              <div class="stat-value">{{ serverStats.totalCpu }}%</div>
-              <div class="stat-bar">
-                <div
-                  class="stat-bar-fill cpu"
-                  :style="{ width: `${serverStats.totalCpu}%` }"
-                ></div>
-              </div>
-            </div>
-            <div class="stat-item">
-              <div class="stat-label">
-                <span class="symbol">></span>
-                内存使用率
-              </div>
-              <div class="stat-value">{{ serverStats.totalMemory }}%</div>
-              <div class="stat-bar">
-                <div
-                  class="stat-bar-fill memory"
-                  :style="{ width: `${serverStats.totalMemory}%` }"
-                ></div>
-              </div>
-            </div>
-            <div class="stat-item">
-              <div class="stat-label">
-                <span class="symbol">></span>
-                磁盘使用率
-              </div>
-              <div class="stat-value">{{ serverStats.totalDisk }}%</div>
-              <div class="stat-bar">
-                <div
-                  class="stat-bar-fill disk"
-                  :style="{ width: `${serverStats.totalDisk}%` }"
-                ></div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </TerminalWindow>
-
-      <!-- 任务调度数据 -->
-      <TerminalWindow title="task-scheduler@nightingale:~" max-width="100%">
-        <div class="stats-section">
-          <div class="command-line">
-            <span class="prompt">$</span>
-            <span class="command">./task-scheduler.sh --stats</span>
-          </div>
-          <div class="stats-content">
-            <div class="stat-item">
-              <div class="stat-label">
-                <span class="symbol">></span>
-                运行中
-              </div>
-              <div class="stat-value running">{{ taskStats.running }}</div>
-            </div>
-            <div class="stat-item">
-              <div class="stat-label">
-                <span class="symbol">></span>
-                已完成
-              </div>
-              <div class="stat-value completed">{{ taskStats.completed }}</div>
-            </div>
-            <div class="stat-item">
-              <div class="stat-label">
-                <span class="symbol">></span>
-                失败
-              </div>
-              <div class="stat-value failed">{{ taskStats.failed }}</div>
-            </div>
-            <div class="stat-item">
-              <div class="stat-label">
-                <span class="symbol">></span>
-                等待中
-              </div>
-              <div class="stat-value pending">{{ taskStats.pending }}</div>
-            </div>
-          </div>
-        </div>
-      </TerminalWindow>
-    </div>
   </div>
 </template>
 
@@ -573,6 +550,198 @@ onMounted(() => {
   background: $form-card-border-mix-result;
   margin: calc($space * 4) 0;
   border: none;
+}
+
+// 紧凑的状态栏设计
+.stats-container {
+  scroll-margin-top: calc($space * 20);
+  margin-bottom: calc($space * 4);
+}
+
+.stats-section-compact {
+  .command-line-compact {
+    display: flex;
+    align-items: center;
+    gap: calc($space * 2);
+    margin-bottom: calc($space * 4);
+    font-size: 0.75rem;
+    padding-bottom: calc($space * 3);
+    border-bottom: 1px dashed $form-card-border-mix-result;
+  }
+
+  .prompt {
+    color: $green-500;
+    font-weight: 600;
+    font-family: $font-mono;
+  }
+
+  .command {
+    color: $foreground;
+    font-family: $font-mono;
+  }
+
+  .stats-grid-compact {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: calc($space * 6);
+    align-items: stretch;
+  }
+
+  .stats-group {
+    display: flex;
+    flex-direction: column;
+    gap: calc($space * 3);
+    height: 100%;
+  }
+
+  .stats-items-compact {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    gap: calc($space * 3);
+    flex: 1;
+  }
+
+  .stats-group-header {
+    display: flex;
+    align-items: center;
+    gap: calc($space * 2);
+    color: $muted-foreground;
+    font-family: $font-mono;
+    font-size: 0.75rem;
+    margin-bottom: calc($space * 2);
+
+    .symbol {
+      color: $green-500;
+    }
+
+    .group-title {
+      color: $foreground;
+      font-weight: 500;
+    }
+  }
+
+
+  .stat-item-compact {
+    display: flex;
+    flex-direction: column;
+    gap: calc($space * 1.5);
+    padding: calc($space * 3);
+    background-color: transparent;
+    border: 1px solid color-mix(in srgb, $border-color 20%, $form-card-border-mix);
+    border-radius: 4px;
+    transition: all 0.2s ease;
+
+    &:hover {
+      border-color: color-mix(in oklab, $green-500 50%, transparent);
+      background-color: color-mix(in oklab, $green-500 5%, transparent);
+    }
+  }
+
+  .task-scheduler-group .stat-item-compact {
+    background-color: $muted-color;
+
+    &:hover {
+      border-color: color-mix(in oklab, $green-500 50%, transparent);
+      background-color: color-mix(in oklab, $green-500 8%, $muted-color);
+    }
+  }
+
+  .stat-label-compact {
+    color: $muted-foreground;
+    font-family: $font-mono;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .stat-value-compact {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: $foreground;
+    font-family: $font-mono;
+
+    &.online {
+      color: $green-500;
+    }
+
+    &.running {
+      color: $green-500;
+    }
+
+    &.completed {
+      color: $green-500;
+    }
+
+    &.failed {
+      color: #ff5f57;
+    }
+
+    &.pending {
+      color: #ffbd2e;
+    }
+  }
+
+  .stat-progress-compact {
+    display: flex;
+    flex-direction: column;
+    gap: calc($space * 1.5);
+  }
+
+  .stat-bar-compact {
+    width: 100%;
+    height: 6px;
+    background-color: color-mix(in srgb, $border-color 20%, transparent);
+    border-radius: 3px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .stat-bar-fill-compact {
+    height: 100%;
+    border-radius: 3px;
+    transition: width 0.5s ease;
+    position: relative;
+
+    &.cpu {
+      background: linear-gradient(
+        90deg,
+        color-mix(in oklab, $green-500 80%, transparent),
+        $green-500
+      );
+    }
+
+    &.memory {
+      background: linear-gradient(
+        90deg,
+        color-mix(in oklab, #3b82f6 80%, transparent),
+        #3b82f6
+      );
+    }
+
+    &.disk {
+      background: linear-gradient(
+        90deg,
+        color-mix(in oklab, #8b5cf6 80%, transparent),
+        #8b5cf6
+      );
+    }
+
+    &::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(
+        90deg,
+        transparent,
+        color-mix(in oklab, white 20%, transparent),
+        transparent
+      );
+      animation: shimmer 2s infinite;
+    }
+  }
 }
 
 .stats-grid {
@@ -894,6 +1063,16 @@ onMounted(() => {
 @media (max-width: 768px) {
   .stats-grid {
     grid-template-columns: 1fr;
+  }
+
+  .stats-section-compact {
+    .stats-grid-compact {
+      grid-template-columns: 1fr;
+    }
+
+    .stats-items-compact {
+      grid-template-columns: repeat(2, 1fr);
+    }
   }
 
   .nav-grid {

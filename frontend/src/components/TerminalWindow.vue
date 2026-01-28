@@ -160,6 +160,5 @@ onUnmounted(() => {
 
 .terminal-body {
   padding: calc($space * 8) calc($space * 10);
-  min-height: 320px;
 }
 </style>
